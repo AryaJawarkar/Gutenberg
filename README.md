@@ -89,9 +89,8 @@ Parameters:
 
 ## Performance Considerations
 1. Debounced search to prevent API overload
-2. Lazy loading of images
-3. Infinite scroll with buffer zone
-4. Optimized DOM manipulation
+2. Infinite scroll with buffer zone
+3. Optimized DOM manipulation
 
 ## Browser Compatibility
 - Modern browsers (Chrome, Firefox, Safari, Edge)
