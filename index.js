@@ -33,11 +33,11 @@ window.addEventListener('scroll', () => {
 });
 
 // Add clear search functionality
-searchInput.addEventListener('input', function() {
-    clearSearchBtn.classList.toggle('visible', this.value.length > 0);
+searchInput.addEventListener('input', () => {
+    clearSearchBtn.classList.toggle('visible',searchInput.value.length > 0);
 });
 
-clearSearchBtn.addEventListener('click', function() {
+clearSearchBtn.addEventListener('click', () => {
     searchInput.value = '';
     clearSearchBtn.classList.remove('visible');
     fetchBooks(selectedCategory);
@@ -73,16 +73,21 @@ async function fetchBooks(category, searchTerm = '') {
         const data = await response.json();
         
         tempcurrentPage = data.next;
-        if(tempcurrentPage.includes("localhost")){
+        if(tempcurrentPage && tempcurrentPage.includes("localhost")){
             currentPage = tempcurrentPage.replace("localhost","skunkworks.ignitesol.com");
+        }
+        else{
+            currentPage = tempcurrentPage;
         }
         console.log(currentPage);
         displayBooks(data.results, searchTerm);
-        isLoading = false;
-        loadingElement.classList.add('hidden');
+        
     } catch (error) {
         console.error('Error fetching books:', error);
-    } 
+    } finally {
+        isLoading = false;
+        loadingElement.classList.add('hidden');
+    }
 }
 
 function displayBooks(books, clearExisting = true) {
@@ -137,7 +142,7 @@ async function loadMoreBooks() {
         const data = await response.json();
         
         tempcurrentPage = data.next;
-        if(tempcurrentPage.includes("localhost")){
+        if(tempcurrentPage &&tempcurrentPage.includes("localhost")){
             currentPage = tempcurrentPage.replace("localhost","skunkworks.ignitesol.com");
         }
         else{
@@ -166,11 +171,10 @@ function isNearBottom() {
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
-        const later = () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
             clearTimeout(timeout);
             func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        }, wait);
     };
 } 
